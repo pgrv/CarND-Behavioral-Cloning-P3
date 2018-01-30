@@ -133,12 +133,14 @@ To get much better results this data set could be expanded by more training data
 
 After reading the input data the set is splitted into training data and validation data.
 For both data sets the images will be flipped and the steering angel will be multiplied with -1.
+
 ![Original image][image2]
 ![Flipped image][image3]
 
 Then the model is created. It uses, like discussed, the Nvidia Net and a dropout layer.
 The images I get from the Lambda layer and the cropping layer are shown below:
-![Lambda layer][image4]
+
 ![Cropping layer][image5]
+![Lambda layer][image4]
 
 The model is trained using a generator and it will be saved to 'model.h5'.
