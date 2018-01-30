@@ -19,6 +19,10 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./examples/nvidia_model.png "Model Visualization"
+[image2]: ./examples/original.png "Original image"
+[image3]: ./examples/flipped.png "Flipped image"
+[image4]: ./examples/lambda.png "Lambda layer"
+[image5]: ./examples/cropped_image.png "Cropping layer"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -51,16 +55,16 @@ The model.py file contains the code for training and saving the convolution neur
 I used the Nvidia Net that is described in the classroom:
 
 | Layer         		|     Description	        									| 
-|:---------------------:|:-------------------------------------------------------------:| 
-| Lambda         		| Image normalization, mean centering, outputs 160x320x3		| 
-| Cropping		     	| outputs 65x320x3											 	|
+|:---------------------:|:-------------------------------------------------------------:|
+| Cropping		     	| outputs 65x320x3											 	| 
+| Lambda         		| Image normalization, mean centering, outputs 65x320x3			| 
 | Convolution 5x5     	| 2x2 stride, outputs 31x158x24, RELU							|
 | Convolution 5x5     	| 2x2 stride, outputs 14x77x36, RELU							|
 | Convolution 5x5     	| 2x2 stride, outputs 5x37x48, RELU								|
 | Convolution 3x3     	| outputs 3x35x64, RELU											|
 | Convolution 3x3     	| outputs 1x33x64, RELU											|
 | Flatten				| outputs 2112 													|
-| Dense					| outputs 120													|
+| Dense					| outputs 100													|
 | Dense					| outputs 50													|
 | Dense					| outputs 10													|
 | Dense					| outputs 1														|
@@ -68,7 +72,7 @@ I used the Nvidia Net that is described in the classroom:
 
 #### 2. Attempts to reduce overfitting in the model
 
-I decided to not modify the net by applying layers like dropout.
+I added a dropout layer after the last convolution layer. It shall reduce the overfitting.
 I reduced the number of epochs so that the validation lost does not increase.
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 87-88). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
@@ -99,10 +103,26 @@ In the last step I integrated a generator because the amount of data got too lar
 
 #### 2. Final Model Architecture
 
-I did not any change on the Nvidia Net. So the final model is the same as described earlier.
+The only thing I have changed is to add a dropout layer after the convolution layers to reduce overfitting.
+| Layer         		|     Description	        									| 
+|:---------------------:|:-------------------------------------------------------------:|
+| Cropping		     	| outputs 65x320x3											 	| 
+| Lambda         		| Image normalization, mean centering, outputs 65x320x3			| 
+| Convolution 5x5     	| 2x2 stride, outputs 31x158x24, RELU							|
+| Convolution 5x5     	| 2x2 stride, outputs 14x77x36, RELU							|
+| Convolution 5x5     	| 2x2 stride, outputs 5x37x48, RELU								|
+| Convolution 3x3     	| outputs 3x35x64, RELU											|
+| Convolution 3x3     	| outputs 1x33x64, RELU											|
+| Dropout				| 0.5		 													|
+| Flatten				| outputs 2112 													|
+| Dense					| outputs 100													|
+| Dense					| outputs 50													|
+| Dense					| outputs 10													|
+| Dense					| outputs 1														|
+
 The Picture below shows the net but the output shapes are not correct. Therefore take al look at the appopriate model architecture.
 
-![alt text][image1]
+![Model Visualization][image1]
 
 #### 3. Creation of the Training Set & Training Process
 
@@ -110,3 +130,15 @@ To capture good driving behavior, I first recorded four laps on track one using 
 Then I recorded two rounds on the second track.
 But the simulation does not got me good results. First I was not sure if it was because of bad training data or because the net was not powerfull enough. So I decided to use the datas that are given in the classroom. With this data set the vehicle drives already around the track one without leaving it.
 To get much better results this data set could be expanded by more training data from both tracks. Thats maybe the problem why my vehicle can not drive around the second track and maybe because the vehicle drives not smooth enough.
+
+After reading the input data the set is splitted into training data and validation data.
+For both data sets the images will be flipped and the steering angel will be multiplied with -1.
+![Original image][image2]
+![Flipped image][image3]
+
+Then the model is created. It uses, like discussed, the Nvidia Net and a dropout layer.
+The images I get from the Lambda layer and the cropping layer are shown below:
+![Lambda layer][image4]
+![Cropping layer][image5]
+
+The model is trained using a generator and it will be saved to 'model.h5'.
